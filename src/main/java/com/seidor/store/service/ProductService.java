@@ -2,6 +2,7 @@ package com.seidor.store.service;
 
 import com.seidor.store.config.AuthUtil;
 import com.seidor.store.dto.ProductRequestDTO;
+import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
 import com.seidor.store.model.User;
@@ -28,11 +29,10 @@ public class ProductService {
     }
 
     public Product getProductById(Integer id){
-        return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     public Product addProduct(ProductRequestDTO request){
-
 
         Product product = ProductMapper.toEntity(request);
 
@@ -42,7 +42,7 @@ public class ProductService {
     }
 
     public Product updateProduct(Integer id, ProductRequestDTO request){
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
@@ -52,7 +52,7 @@ public class ProductService {
     }
 
     public void deleteProductById(Integer id){
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         productRepository.deleteById(id);
     }
 

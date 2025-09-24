@@ -1,6 +1,8 @@
 package com.seidor.store.dto.authDTOS;
 
 public class AuthResponseDTO {
+
+
     private String token;
 
     public AuthResponseDTO(String token) {

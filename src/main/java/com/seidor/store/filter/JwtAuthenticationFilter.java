@@ -39,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     //El metodo doFilterInternal es el corazón del filtro.
     // Se ejecuta en cada request antes de que Spring Security decida quién es el usuario.
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -82,6 +84,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
+
+
 
         //Deja pasar la request
         filterChain.doFilter(request, response);

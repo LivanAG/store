@@ -7,7 +7,9 @@ import com.seidor.store.dto.authDTOS.RegisterRequestDTO;
 import com.seidor.store.dto.authDTOS.RegisterResponseDTO;
 import com.seidor.store.model.User;
 import com.seidor.store.security.JwtUtil;
+import com.seidor.store.service.AuthService;
 import com.seidor.store.service.MyUserDetailService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,34 +24,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final MyUserDetailService userDetailsService;
-
-
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtUtil jwtUtil, MyUserDetailService userDetailsService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+    private AuthService authService;
+    public AuthController( AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(),
-                        request.getPassword())
-        );
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
 
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthResponseDTO(token));
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request)
+    public ResponseEntity<RegisterResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request)
     {
-        User newUser = userDetailsService.register(request);
+        User newUser = authService.register(request);
         RegisterResponseDTO registerResponse = new RegisterResponseDTO(newUser);
         return ResponseEntity.ok(registerResponse);
     }

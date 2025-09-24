@@ -6,6 +6,7 @@ import com.seidor.store.mapper.SellMapper;
 import com.seidor.store.model.Sell;
 import com.seidor.store.repository.SellRepository;
 import com.seidor.store.service.SellService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/sell")
 public class SellController {
 
-    private SellService sellService;
+    private final SellService sellService;
 
     public SellController(SellService sellService) {
         this.sellService = sellService;
@@ -28,7 +29,7 @@ public class SellController {
     }
 
     @PostMapping
-    public ResponseEntity<SellResponseDTO> addSell(@RequestBody SellRequestDTO request) {
+    public ResponseEntity<SellResponseDTO> addSell(@Valid @RequestBody SellRequestDTO request) {
         Sell  sell = sellService.addSell(request);
         return ResponseEntity.ok(SellMapper.toDto(sell));
     }

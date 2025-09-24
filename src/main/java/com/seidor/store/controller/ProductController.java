@@ -6,6 +6,7 @@ import com.seidor.store.dto.ProductResponseDTO;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
 import com.seidor.store.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +35,12 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> addProduct(@RequestBody ProductRequestDTO request) {
+    public ResponseEntity<ProductResponseDTO> addProduct(@Valid @RequestBody ProductRequestDTO request) {
         return ResponseEntity.ok(ProductMapper.toDto(productService.addProduct(request)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable("id") Integer id,@RequestBody ProductRequestDTO request) {
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable("id") Integer id,@Valid @RequestBody ProductRequestDTO request) {
         return ResponseEntity.ok(ProductMapper.toDto(productService.updateProduct(id, request)));
     }
 

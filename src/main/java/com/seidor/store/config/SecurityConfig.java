@@ -58,7 +58,7 @@ public class SecurityConfig {
                 //Configuración de rutas públicas y protegidas
                 .authorizeHttpRequests(authz ->
                         authz
-                                .requestMatchers("/auth/**", "/h2-console/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/product/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )

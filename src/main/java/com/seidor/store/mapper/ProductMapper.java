@@ -15,7 +15,8 @@ public class ProductMapper {
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
 
-        Storage incoming = dto.getStorage();
+        StorageDTO incoming = dto.getStorage();
+
         Storage storage = new Storage();
 
         if (incoming == null) {

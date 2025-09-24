@@ -22,10 +22,8 @@ public class MyUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
-    public MyUserDetailService(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+    public MyUserDetailService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -57,28 +55,6 @@ public class MyUserDetailService implements UserDetailsService {
 
     }
 
-
-    public User register(RegisterRequestDTO request){
-        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Usuario ya existe");
-        }
-
-        User user = new User();
-
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setUsername(request.getUsername());
-        user.setRole(request.getRole());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDni(request.getDni());
-        user.setPhone(request.getPhone());
-
-        userRepository.save(user);
-        return user;
-
-
-    }
 
 
 }

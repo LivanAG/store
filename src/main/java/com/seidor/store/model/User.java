@@ -20,6 +20,7 @@ public class User {
     private String lastName;
     private String dni;
     private Integer phone;
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)

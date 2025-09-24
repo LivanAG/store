@@ -8,7 +8,11 @@ public class StorageDTO {
 
     private Double price;
 
-
+    public StorageDTO(){}
+    public StorageDTO(Integer stock, Double price) {
+        this.stock = stock;
+        this.price = price;
+    }
 
     public Double getPrice() {
         return price;
