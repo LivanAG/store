@@ -4,6 +4,7 @@ import com.seidor.store.config.AuthUtil;
 import com.seidor.store.dto.ProductRequestDTO;
 import com.seidor.store.dto.SellRequestDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
+import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.*;
 import com.seidor.store.repository.ProductRepository;
@@ -89,5 +90,12 @@ public class SellService {
 
 
         return sellRepository.save(sell);
+    }
+
+
+
+    public void deleteSellbyId(int id) {
+        Sell sell = sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
+        sellRepository.deleteById(id);
     }
 }

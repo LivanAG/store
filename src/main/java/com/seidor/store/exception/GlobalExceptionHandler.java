@@ -1,11 +1,13 @@
 package com.seidor.store.exception;
 
 
+import com.seidor.store.dto.authDTOS.AuthResponseDTO;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.exception.myExceptions.UnauthorizedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,6 +48,11 @@ public class GlobalExceptionHandler {
     }
 
 
-
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<AuthResponseDTO> handleBadCredentials(BadCredentialsException ex) {
+        // Maneja errores de login
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new AuthResponseDTO("Credenciales incorrectas"));
+    }
 
 }

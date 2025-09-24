@@ -46,49 +46,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-
-        //Busca la cabecera Authorization.
         final String authorizationHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
 
-
-        //Comprueba que empiece con "Bearer " (el estándar para JWT).
-        //Extrae el token (quita los 7 caracteres de "Bearer ").
-        //Intenta leer el username (o email) con jwtUtil.extractUsername(jwt)
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);// quita "Bearer "
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwt);
-            } catch (IllegalArgumentException e) {
-                // token inválido o mal formado -> no autenticamos
+            } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                // Token expirado → devuelve 401 con mensaje
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Token expirado\"}");
+                return; // detener el filtro, no seguimos con la cadena
+            } catch (Exception e) {
+                // Token inválido o mal formado
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Token inválido\"}");
+                return;
             }
         }
 
-        //Si tenemos username y no hay autenticación previa
-        //SecurityContextHolder es donde Spring Security guarda al usuario autenticado.
-        //Si aún no hay usuario en el contexto, procedemos a autenticar.
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            //Cargar usuario y validar token
-
-
-            //Carga de BD al usuario con userDetailsService (para comparar roles y password si hace falta).
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
-
-            //Comprueba que el token es válido con jwtUtil.validateToken(jwt, userDetails) (firma + expiración + username).
-            if(jwtUtil.validateToken(jwt, userDetails)) {
-
-                //Crea un UsernamePasswordAuthenticationToken (es la representación de un usuario autenticado en Spring).
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            if (jwtUtil.validateToken(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-
-
-
-        //Deja pasar la request
         filterChain.doFilter(request, response);
     }
 }

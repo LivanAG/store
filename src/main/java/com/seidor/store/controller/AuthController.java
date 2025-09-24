@@ -10,6 +10,7 @@ import com.seidor.store.security.JwtUtil;
 import com.seidor.store.service.AuthService;
 import com.seidor.store.service.MyUserDetailService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,8 +32,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
-
-        return ResponseEntity.ok(authService.login(request));
+        AuthResponseDTO response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")

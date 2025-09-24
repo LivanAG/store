@@ -20,7 +20,7 @@ public class SellMapper {
                 .map(sd-> new SellDetailDTO(sd.getProduct().getId(),sd.getAmount()))
                 .collect(Collectors.toSet());
 
-        return new SellResponseDTO(sell.getUser().getId(),detailDTO,sell.getTotalSale(),sell.getCreatedAt());
+        return new SellResponseDTO(sell.getId(),sell.getUser().getId(),detailDTO,sell.getTotalSale(),sell.getCreatedAt());
     }
 
     // De lista de entidades → lista DTO response

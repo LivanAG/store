@@ -8,17 +8,26 @@ import java.util.Set;
 
 public class SellResponseDTO {
 
+    private Integer sellId;
     private Integer userId;
-
     private Set<SellDetailDTO> sellDetails;
     private Double totalSale;
     private LocalDateTime createdAt;
 
-    public SellResponseDTO(Integer userId,Set<SellDetailDTO> sellDetails, Double totalSale, LocalDateTime createdAt) {
+    public SellResponseDTO(Integer sellId,Integer userId,Set<SellDetailDTO> sellDetails, Double totalSale, LocalDateTime createdAt) {
+        this.sellId = sellId;
         this.userId = userId;
         this.sellDetails = sellDetails;
         this.totalSale = totalSale;
         this.createdAt = createdAt;
+    }
+
+    public Integer getSellId() {
+        return sellId;
+    }
+
+    public void setSellId(Integer sellId) {
+        this.sellId = sellId;
     }
 
     public Integer getUserId() {

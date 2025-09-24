@@ -35,5 +35,9 @@ public class SellController {
     }
 
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSell(@PathVariable("id") Integer id) {
+        sellService.deleteSellbyId(id);
+        return ResponseEntity.noContent().build();
+    }
 }
