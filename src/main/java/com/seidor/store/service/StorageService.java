@@ -10,8 +10,17 @@ public class StorageService {
         return product.getStorage().getStock() >= amount;
     }
 
+    public Integer getAvailableStock(Product product){
+        return product.getStorage().getStock();
+    }
+
+
     public void reduceStock(Product product,Integer amount) {
         product.getStorage().setStock(product.getStorage().getStock() - amount);
+    }
+
+    public void increaseStock(Product product,Integer amount) {
+        product.getStorage().setStock(product.getStorage().getStock() + amount);
     }
 }
 

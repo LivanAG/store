@@ -17,7 +17,7 @@ public class SellMapper {
     public static SellResponseDTO toDto(Sell sell) {
 
         Set<SellDetailDTO>detailDTO = sell.getSellDetails().stream()
-                .map(sd-> new SellDetailDTO(sd.getProduct().getId(),sd.getAmount()))
+                .map(SellDetailMapper::toDto)
                 .collect(Collectors.toSet());
 
         return new SellResponseDTO(sell.getId(),sell.getUser().getId(),detailDTO,sell.getTotalSale(),sell.getCreatedAt());

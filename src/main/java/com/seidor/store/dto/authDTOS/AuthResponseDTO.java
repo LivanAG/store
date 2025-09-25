@@ -1,5 +1,10 @@
 package com.seidor.store.dto.authDTOS;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class AuthResponseDTO {
 
 
@@ -9,11 +14,4 @@ public class AuthResponseDTO {
         this.token = token;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

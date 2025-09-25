@@ -2,10 +2,14 @@ package com.seidor.store.dto;
 
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 import com.seidor.store.model.SellDetail;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@Setter
+@Getter
 public class SellResponseDTO {
 
     private Integer sellId;
@@ -22,44 +26,5 @@ public class SellResponseDTO {
         this.createdAt = createdAt;
     }
 
-    public Integer getSellId() {
-        return sellId;
-    }
 
-    public void setSellId(Integer sellId) {
-        this.sellId = sellId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-
-    public Set<SellDetailDTO> getSellDetails() {
-        return sellDetails;
-    }
-
-    public void setSellDetails(Set<SellDetailDTO> sellDetails) {
-        this.sellDetails = sellDetails;
-    }
-
-    public Double getTotalSale() {
-        return totalSale;
-    }
-
-    public void setTotalSale(Double totalSale) {
-        this.totalSale = totalSale;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

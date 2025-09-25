@@ -9,6 +9,8 @@ import com.seidor.store.model.Product;
 import com.seidor.store.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,9 +32,12 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    @Captor
+    ArgumentCaptor<Product> productCaptor;
+
 
     @Test
-    void getAllProducts_shouldReturnAll() {
+    public void getAllproducts_shouldReturnAll() {
         List<Product> products = List.of(new Product(), new Product());
         when(productRepository.findAll()).thenReturn(products);
         List<Product> result = productService.getAllproducts();
@@ -55,13 +59,21 @@ public class ProductServiceTest {
 
     // Agregar un producto valido llama al metodo save del repositorio
     @Test
-    public void addProduct_ShouldCallSaveMethod_WhenProductIsValid(){
+    public void addProduct_ShouldSaveCorrectProduct(){
 
         ProductRequestDTO request = new ProductRequestDTO("Livan","descripcion",new StorageDTO(1,10.5));
 
         productService.addProduct(request);
 
-        verify(productRepository).save(any(Product.class));
+        verify(productRepository).save(productCaptor.capture());
+
+        Product savedProduct = productCaptor.getValue();
+
+        assertEquals(request.getName(), savedProduct.getName());
+        assertEquals(request.getDescription(), savedProduct.getDescription());
+        assertNotNull(savedProduct.getStorage());
+        assertEquals(request.getStorage().getStock(), savedProduct.getStorage().getStock());
+        assertEquals(request.getStorage().getPrice(), savedProduct.getStorage().getPrice());
 
     }
 
@@ -92,17 +104,15 @@ public class ProductServiceTest {
 
     @Test
     //verifico que se elimina correcatmente un producto
-    public void deleteProduct_ShouldCallSaveMethod_WhenProductIsValid(){
+    public void deleteProduct_shouldThrowException_WhenProductExists(){
         Integer id = 1;
-        Product product = new Product();
-        product.setId(id);
-        product.setDescription("lalalalala");
-        product.setName("Pepe");
 
-        when(productRepository.findById(id)).thenReturn(Optional.of(product));
-        productService.deleteProductById(id);
+        when(productRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(productRepository).deleteById(id);
+        assertThrows(ResourceNotFoundException.class,() -> productService.deleteProductById(id));
+
+        verify(productRepository).findById(id);
+
     }
 
 

@@ -4,6 +4,7 @@ import com.seidor.store.config.AuthUtil;
 import com.seidor.store.dto.ProductRequestDTO;
 import com.seidor.store.dto.SellRequestDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
+import com.seidor.store.exception.myExceptions.InsufficientStockException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.*;
@@ -36,8 +37,10 @@ public class SellService {
 
 
     public List<Sell> getAllSells(){
+
         //Recupero el usuario logueado que quiere realizar la peticion
         User user = AuthUtil.getCurrentUser();
+
         Role role = user.getRole();
         if(role == Role.ADMIN){
             return sellRepository.findAll();
@@ -54,21 +57,34 @@ public class SellService {
         //Recupero el usuario logueado que quiere realizar la peticion
         User user = AuthUtil.getCurrentUser();
 
+        //Creo la venta
         Sell sell = new Sell();
+
+        //le asigno el usuario
         sell.setUser(user);
 
+        //Creamos nuestro set de sell details
         Set<SellDetail> details = new HashSet<>();
 
+        //Rellenamos nuestro set
         for (SellDetailDTO detailDto : request.getSellDetails()) {
 
+            //Antes de mappear se SellDetailDTO a SellDetail
+            //Comprobamos que el producto existe
             Product product = productRepository.findById(detailDto.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
 
             //Comprobamos que el stock sea suficiente antes de ejecutar la venta
             if (!storageService.isEnoughStock(product, detailDto.getAmount())) {
-                throw new RuntimeException("No quedan suficientes unidades del producto"+detailDto.getProductId()+" para satisfacer la orden");
+                throw new InsufficientStockException(
+                        detailDto.getProductId(),
+                        detailDto.getAmount(),
+                        storageService.getAvailableStock(product)
+                );
             }
 
+            //Mapeamos de dto a entity
             SellDetail sd = new SellDetail();
             sd.setSell(sell);
             sd.setProduct(product);
@@ -94,8 +110,19 @@ public class SellService {
 
 
 
-    public void deleteSellbyId(int id) {
+    public void deleteSellbyId(Integer id) {
         Sell sell = sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
         sellRepository.deleteById(id);
+    }
+
+
+    public Sell getSellById(Integer id) {
+        return sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
+    }
+
+
+    public Set<SellDetail> getSellDetails(Integer id) {
+        Sell sell = sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
+        return sell.getSellDetails();
     }
 }

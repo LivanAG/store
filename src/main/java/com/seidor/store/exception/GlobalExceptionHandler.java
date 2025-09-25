@@ -2,6 +2,7 @@ package com.seidor.store.exception;
 
 
 import com.seidor.store.dto.authDTOS.AuthResponseDTO;
+import com.seidor.store.exception.myExceptions.InsufficientStockException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.exception.myExceptions.UnauthorizedException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,12 +12,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
@@ -50,9 +53,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<AuthResponseDTO> handleBadCredentials(BadCredentialsException ex) {
-        // Maneja errores de login
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new AuthResponseDTO("Credenciales incorrectas"));
     }
 
+
+    @ExceptionHandler(InsufficientStockException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleInsufficientStock(InsufficientStockException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "INSUFFICIENT_STOCK");
+        error.put("message", ex.getMessage());
+        error.put("productId", ex.getProductId());
+        error.put("requested", ex.getRequested());
+        error.put("available", ex.getAvailable());
+        return error;
+    }
 }

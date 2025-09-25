@@ -1,28 +1,20 @@
 package com.seidor.store.dto.sellDetailDTO;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class SellDetailDTO {
 
     private Integer productId;
     private Integer amount;
+    private Double amountTotal;
 
-    public SellDetailDTO(Integer productId, Integer amount) {
+    public SellDetailDTO(Integer productId, Integer amount,Double amountTotal) {
         this.productId = productId;
         this.amount = amount;
+        this.amountTotal = amountTotal;
     }
 
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
 }

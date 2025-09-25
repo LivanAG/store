@@ -1,7 +1,11 @@
 package com.seidor.store.dto.storageDTOS;
 
 import com.seidor.store.model.Storage;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class StorageDTO {
 
     private Integer stock;
@@ -14,19 +18,4 @@ public class StorageDTO {
         this.price = price;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
 }

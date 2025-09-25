@@ -1,11 +1,19 @@
 package com.seidor.store.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SellDetail {
 
     @Id
@@ -26,39 +34,4 @@ public class SellDetail {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public Sell getSell() {
-        return sell;
-    }
-
-    public void setSell(Sell sell) {
-        this.sell = sell;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 }
