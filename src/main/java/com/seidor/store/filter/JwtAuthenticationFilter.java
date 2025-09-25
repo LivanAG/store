@@ -7,6 +7,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,19 +55,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
+            String usuario = ""; // Valor por defecto para el log
             try {
                 username = jwtUtil.extractUsername(jwt);
+                usuario = username; // si se puede extraer, lo usamos
             } catch (io.jsonwebtoken.ExpiredJwtException e) {
-                // Token expirado → devuelve 401 con mensaje
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"error\": \"Token expirado\"}");
-                return; // detener el filtro, no seguimos con la cadena
+                // Token expirado → devuelve 401 con mensaje y log
+                logTokenError("Token expirado", e, usuario, response);
+                return; // detener el filtro
             } catch (Exception e) {
                 // Token inválido o mal formado
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"error\": \"Token inválido\"}");
+                logTokenError("Token inválido", e, usuario, response);
                 return;
             }
         }
@@ -81,4 +82,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+
+
+    private void logTokenError(String mensaje, Exception ex, String usuario, HttpServletResponse response) throws IOException {
+        Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);
+
+        // Guardamos usuario en ThreadContext para que aparezca en el log4j2.xml
+        ThreadContext.put("usuario", usuario);
+
+        // Log tipo error SIN stacktrace
+        logger.error("{} - {}", mensaje, ex.getMessage());
+
+        // Formato de Json pedido
+        String json = String.format(
+                "{\"httpStatus\": %d, \"message\": \"%s\", \"code\": \"%s\", \"backendMessage\": \"%s\"}",
+                HttpServletResponse.SC_UNAUTHORIZED,
+                mensaje,
+                "AUTH_ERROR",
+                ex.getMessage()
+        );
+
+        // Devolvemos la respuesta
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write(json);
+
+        ThreadContext.clearAll();
+    }
+
+
 }

@@ -33,6 +33,7 @@ public class AuthService {
 
     public AuthResponseDTO login(AuthRequestDTO authRequest) {
 
+
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(),
                             authRequest.getPassword())
