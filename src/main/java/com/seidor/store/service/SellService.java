@@ -84,7 +84,7 @@ public class SellService {
                 );
             }
 
-            //Mapeamos de dto a entity
+            //Despues de todas las comprobaciones, creamos el sellDetail
             SellDetail sd = new SellDetail();
             sd.setSell(sell);
             sd.setProduct(product);
@@ -92,12 +92,17 @@ public class SellService {
 
             //Reducimos stock
             storageService.reduceStock(product, detailDto.getAmount());
+
+            //Agregamos el sellDetail al set de detalles de venta
             details.add(sd);
 
         }
+
+        //Agregamos nuestro set antes creado a nuestra venta
         sell.setSellDetails(details);
 
 
+        //Calculamos el total de la venta
         double total = details.stream()
                 .mapToDouble(d -> d.getProduct().getStorage().getPrice() * d.getAmount())
                 .sum();

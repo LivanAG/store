@@ -1,10 +1,12 @@
 package com.seidor.store.dto.sellDetailDTO;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class SellDetailDTO {
 
     private Integer productId;
