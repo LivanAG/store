@@ -1,19 +1,16 @@
 package com.seidor.store.controller;
 
-import com.seidor.store.dto.ProductResponseDTO;
 import com.seidor.store.dto.SellRequestDTO;
 import com.seidor.store.dto.SellResponseDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
-import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.mapper.SellDetailMapper;
 import com.seidor.store.mapper.SellMapper;
 import com.seidor.store.model.Sell;
-import com.seidor.store.model.SellDetail;
-import com.seidor.store.repository.SellRepository;
 import com.seidor.store.service.SellService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.Set;
@@ -23,6 +20,7 @@ import java.util.Set;
 public class SellController {
 
     private final SellService sellService;
+
 
     public SellController(SellService sellService) {
         this.sellService = sellService;
@@ -57,5 +55,6 @@ public class SellController {
         sellService.deleteSellbyId(id);
         return ResponseEntity.noContent().build();
     }
+
 
 }

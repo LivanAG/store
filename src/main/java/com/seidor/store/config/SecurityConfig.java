@@ -60,6 +60,7 @@ public class SecurityConfig {
                         authz
                                 // Rutas públicas
                                 .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/reactive/sell/**").permitAll()
 
                                 // GET /product/** -> ADMIN o CLIENT
                                 .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("ADMIN", "CLIENT")
