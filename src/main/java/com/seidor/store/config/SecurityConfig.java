@@ -6,6 +6,7 @@ import com.seidor.store.security.JwtUtil;
 import com.seidor.store.service.MyUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,11 +56,20 @@ public class SecurityConfig {
                 )
 
 
-                //Configuración de rutas públicas y protegidas
                 .authorizeHttpRequests(authz ->
                         authz
+                                // Rutas públicas
                                 .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/product/**").hasRole("ADMIN")
+
+                                // GET /product/** -> ADMIN o CLIENT
+                                .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("ADMIN", "CLIENT")
+
+                                // POST, PUT, DELETE /product/** -> solo ADMIN
+                                .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
+
+                                // Todas las demás rutas requieren autenticación
                                 .anyRequest().authenticated()
                 )
 

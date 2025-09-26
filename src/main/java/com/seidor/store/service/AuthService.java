@@ -3,11 +3,15 @@ package com.seidor.store.service;
 import com.seidor.store.dto.authDTOS.AuthRequestDTO;
 import com.seidor.store.dto.authDTOS.AuthResponseDTO;
 import com.seidor.store.dto.authDTOS.RegisterRequestDTO;
+import com.seidor.store.exception.myExceptions.InvalidRoleException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.model.Role;
 import com.seidor.store.model.User;
 import com.seidor.store.repository.UserRepository;
 import com.seidor.store.security.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,13 +26,17 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final MyUserDetailService myUserDetailService;
 
     public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager,JwtUtil jwtUtil) {
+                       AuthenticationManager authenticationManager,
+                       JwtUtil jwtUtil,
+                       MyUserDetailService myUserDetailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.myUserDetailService = myUserDetailService;
     }
 
     public AuthResponseDTO login(AuthRequestDTO authRequest) {
@@ -46,12 +54,37 @@ public class AuthService {
 
     }
 
+    public AuthResponseDTO refreshToken(HttpServletRequest request) {
+
+        String oldToken = request.getHeader("Authorization");
+        if (oldToken == null || !oldToken.startsWith("Bearer ")) {
+            throw new ResourceNotFoundException("Token no proporcionado");
+        }
+
+        oldToken = oldToken.substring(7);
+
+        String username;
+        try {
+            username = jwtUtil.extractUsername(oldToken);
+        } catch (Exception e) {
+            throw new RuntimeException("Token inválido o expirado");
+        }
+
+        UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
+
+        String newToken = jwtUtil.generateToken(userDetails);
+
+        return new AuthResponseDTO(newToken);
+    }
+
     public User register(RegisterRequestDTO request){
 
 
         if(userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new DataIntegrityViolationException("Ya existe ese email, trata de iniciar sesion");
         }
+
+
 
         User user = new User();
 

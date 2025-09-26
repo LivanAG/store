@@ -4,6 +4,7 @@ package com.seidor.store.exception;
 import com.seidor.store.dto.authDTOS.AuthResponseDTO;
 import com.seidor.store.dto.exceptionDTOS.ExceptionDTO;
 import com.seidor.store.exception.myExceptions.InsufficientStockException;
+import com.seidor.store.exception.myExceptions.InvalidRoleException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.exception.myExceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -152,14 +153,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionDTO> handleGeneric(Exception ex) {
+
+
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<ExceptionDTO> handleInvalidRoleException(InvalidRoleException ex) {
+        final Logger logger = LogManager.getLogger("authLogger");
+
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.BAD_REQUEST,
-                "Error en la petición",
-                "GENERIC_ERROR",
+                "Error en los datos enviados",
+                "INVALID_ROLE",
                 ex.getMessage()
         );
+
+        logger.error("Error de rol inválido: {}", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+
+
 }

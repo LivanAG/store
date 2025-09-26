@@ -7,6 +7,7 @@ import com.seidor.store.dto.authDTOS.RegisterRequestDTO;
 import com.seidor.store.dto.authDTOS.RegisterResponseDTO;
 import com.seidor.store.model.User;
 import com.seidor.store.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,5 +52,18 @@ public class AuthController {
         User newUser = authService.register(request);
         RegisterResponseDTO registerResponse = new RegisterResponseDTO(newUser);
         return ResponseEntity.ok(registerResponse);
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponseDTO> refreshToken(HttpServletRequest request) {
+
+        Logger logger = LogManager.getLogger("authLogger");
+
+        AuthResponseDTO response = authService.refreshToken(request);
+
+        logger.info("JWT renovado para {}", response.getToken());
+        ThreadContext.clearAll();
+        return ResponseEntity.ok(response);
     }
 }

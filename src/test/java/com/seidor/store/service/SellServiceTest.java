@@ -33,6 +33,8 @@ public class SellServiceTest {
     private ProductRepository productRepository;
 
     @Mock
+    private ProductService productService;
+    @Mock
     private StorageService storageService;
 
 
@@ -113,7 +115,7 @@ public class SellServiceTest {
         SellRequestDTO request = new SellRequestDTO();
         request.setSellDetails(Set.of(detailDto));
 
-        when(productRepository.findById(100)).thenReturn(Optional.of(product));
+        when(productService.getProductById(100)).thenReturn(product);
         when(storageService.isEnoughStock(product, 2)).thenReturn(true);
         when(sellRepository.save(any(Sell.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -146,7 +148,8 @@ public class SellServiceTest {
         SellRequestDTO request = new SellRequestDTO();
         request.setSellDetails(Set.of(detailDto));
 
-        when(productRepository.findById(999)).thenReturn(Optional.empty());
+        when(productService.getProductById(999))
+                .thenThrow(new ResourceNotFoundException("Producto no encontrado"));
 
         try (MockedStatic<AuthUtil> mockedAuth = Mockito.mockStatic(AuthUtil.class)) {
             mockedAuth.when(AuthUtil::getCurrentUser).thenReturn(user);
@@ -176,7 +179,7 @@ public class SellServiceTest {
         SellRequestDTO request = new SellRequestDTO();
         request.setSellDetails(Set.of(detailDto));
 
-        when(productRepository.findById(100)).thenReturn(Optional.of(product));
+        when(productService.getProductById(100)).thenReturn(product);
         when(storageService.isEnoughStock(product, 10)).thenReturn(false);
         when(storageService.getAvailableStock(product)).thenReturn(5);
 
