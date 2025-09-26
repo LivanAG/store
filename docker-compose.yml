@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:17.6
+    container_name: store_db
+    environment:
+      POSTGRES_DB: store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Ada86088608
+    ports:
+      - "5432:5432"
+    volumes:
+      - store_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  db_test:
+    image: postgres:15
+    container_name: store_db_test
+    environment:
+      POSTGRES_DB: storeTest
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Ada86088608
+    ports:
+      - "5433:5432"
+    volumes:
+      - store_test_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: store_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/store
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Ada86088608
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: MiClaveSuperSecretaQueDebeSerMuyLargaYGuardadaEnVault
+      JWT_EXPIRATION_MS: 3600000
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  store_db_data:
+  store_test_db_data:
