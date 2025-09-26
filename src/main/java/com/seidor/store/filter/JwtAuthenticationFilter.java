@@ -1,6 +1,5 @@
 package com.seidor.store.filter;
 
-
 import com.seidor.store.security.JwtUtil;
 import com.seidor.store.service.MyUserDetailService;
 import jakarta.servlet.FilterChain;
@@ -26,11 +25,8 @@ import java.io.IOException;
 //Meterlo en el SecurityContext para que el resto de la app sepa que está autenticado.
 
 
-//OncePerRequestFilter: Es una clase base de Spring Security que garantiza que tu filtro se ejecute una sola vez por request.
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
-    //Inyectas JwtUtil (para manipular tokens) y MyUserDetailsService (para cargar usuarios de BD).
     private final JwtUtil jwtUtil;
     private final MyUserDetailService myUserDetailService;
 
@@ -50,15 +46,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
+        String username = "desconocido"; // valor por defecto
         String jwt = null;
 
+        // Extraer token JWT
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             String usuario = ""; // Valor por defecto para el log
             try {
                 username = jwtUtil.extractUsername(jwt);
-                usuario = username; // si se puede extraer, lo usamos
             } catch (io.jsonwebtoken.ExpiredJwtException e) {
                 // Token expirado → devuelve 401 con mensaje y log
                 logTokenError("Token expirado", e, usuario, response);
@@ -70,7 +66,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // Autenticar usuario en SecurityContext si hay token válido
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null && jwt != null) {
             UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
@@ -80,21 +77,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        filterChain.doFilter(request, response);
+        // Meter usuario en ThreadContext para logs
+        ThreadContext.put("usuario", username);
+
+        try {
+            // Continuar con la cadena de filtros / controlador
+            filterChain.doFilter(request, response);
+        } finally {
+            // Limpiar siempre el ThreadContext al final
+            ThreadContext.clearAll();
+        }
     }
 
-
-
     private void logTokenError(String mensaje, Exception ex, String usuario, HttpServletResponse response) throws IOException {
-        Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);
+        Logger logger = LogManager.getLogger("authLogger");
 
-        // Guardamos usuario en ThreadContext para que aparezca en el log4j2.xml
+        // Guardar usuario en ThreadContext para logs
         ThreadContext.put("usuario", usuario);
 
-        // Log tipo error SIN stacktrace
+        // Log del error
         logger.error("{} - {}", mensaje, ex.getMessage());
 
-        // Formato de Json pedido
+        // Respuesta JSON
         String json = String.format(
                 "{\"httpStatus\": %d, \"message\": \"%s\", \"code\": \"%s\", \"backendMessage\": \"%s\"}",
                 HttpServletResponse.SC_UNAUTHORIZED,
@@ -103,13 +107,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 ex.getMessage()
         );
 
-        // Devolvemos la respuesta
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.getWriter().write(json);
 
         ThreadContext.clearAll();
     }
-
-
 }

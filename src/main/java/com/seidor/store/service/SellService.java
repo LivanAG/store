@@ -22,15 +22,15 @@ public class SellService {
 
     private final SellRepository sellRepository;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final ProductService productService;
     private final StorageService storageService;
 
     public SellService(SellRepository sellRepository, ProductRepository productRepository,
-                        UserRepository userRepository,
-                        StorageService storageService) {
+                       ProductService productService,
+                       StorageService storageService) {
         this.sellRepository = sellRepository;
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
+        this.productService = productService;
         this.storageService = storageService;
     }
 
@@ -71,9 +71,7 @@ public class SellService {
 
             //Antes de mappear se SellDetailDTO a SellDetail
             //Comprobamos que el producto existe
-            Product product = productRepository.findById(detailDto.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-
+            Product product = productService.getProductById(detailDto.getProductId());
 
             //Comprobamos que el stock sea suficiente antes de ejecutar la venta
             if (!storageService.isEnoughStock(product, detailDto.getAmount())) {

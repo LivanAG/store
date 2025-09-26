@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <!-- Appender a archivo con rotación diaria -->
-        <RollingFile name="FileLogger"
-                     fileName="logs/app.log"
-                     filePattern="logs/app-%d{yyyy-MM-dd}.log.gz">
+        <!-- Logs de Product -->
+        <RollingFile name="ProductFileLogger"
+                     fileName="logs/product.log"
+                     filePattern="logs/product-%d{yyyy-MM-dd}.log.gz">
             <PatternLayout>
-                <!-- Formato: fecha, usuario (ThreadContext) y nivel -->
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{usuario}] %-5level %logger{36} - %msg%n</Pattern>
             </PatternLayout>
             <Policies>
@@ -14,16 +13,52 @@
             </Policies>
         </RollingFile>
 
-        <!-- Appender a consola -->
+        <!-- Logs de Sell -->
+        <RollingFile name="SellFileLogger"
+                     fileName="logs/sell.log"
+                     filePattern="logs/sell-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{usuario}] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- Logs de Auth -->
+        <RollingFile name="AuthFileLogger"
+                     fileName="logs/auth.log"
+                     filePattern="logs/auth-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{usuario}] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- Consola -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss} [%X{usuario}] %-5level %logger{36} - %msg%n"/>
         </Console>
     </Appenders>
 
     <Loggers>
-        <!-- Logger para tu paquete de aplicación -->
-        <Logger name="com.seidor.store" level="debug" additivity="false">
-            <AppenderRef ref="FileLogger"/>
+        <!-- Logger Product -->
+        <Logger name="productLogger" level="debug" additivity="false">
+            <AppenderRef ref="ProductFileLogger"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Logger Sell -->
+        <Logger name="sellLogger" level="debug" additivity="false">
+            <AppenderRef ref="SellFileLogger"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Logger Auth -->
+        <Logger name="authLogger" level="debug" additivity="false">
+            <AppenderRef ref="AuthFileLogger"/>
             <AppenderRef ref="Console"/>
         </Logger>
 

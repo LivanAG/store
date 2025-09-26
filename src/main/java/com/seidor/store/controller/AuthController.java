@@ -32,7 +32,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
 
-        Logger logger = LogManager.getLogger(AuthController.class);
+        Logger logger = LogManager.getLogger("authLogger");
 
         ThreadContext.put("usuario", request.getEmail());
         logger.info("Intento de login de {}", request.getEmail());
