@@ -1,15 +1,22 @@
 package com.seidor.store.service;
 
+import com.seidor.store.Specification.SellSpecification;
 import com.seidor.store.config.AuthUtil;
 import com.seidor.store.dto.sellDTOS.SellRequestDTO;
+import com.seidor.store.dto.sellDTOS.SellResponseDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 import com.seidor.store.exception.myExceptions.InsufficientStockException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.mapper.SellMapper;
 import com.seidor.store.model.*;
 import com.seidor.store.repository.ProductRepository;
 import com.seidor.store.repository.SellRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +38,42 @@ public class SellService {
         this.storageService = storageService;
     }
 
+
+
+
+public List<Sell> getSellsByFilters(
+                LocalDateTime startDate,
+                LocalDateTime endDate,
+                Integer userId,
+                Double minTotalSale,
+                Double maxTotalSale
+        ) {
+            Specification<Sell> spec = null;
+
+            // Filtro por fecha de creación
+            if (startDate != null) {
+                spec = SellSpecification.createdAfter(startDate);
+            }
+            if (endDate != null) {
+                spec = (spec == null) ? SellSpecification.createdBefore(endDate) : spec.and(SellSpecification.createdBefore(endDate));
+            }
+
+            // Filtro por userId
+            if (userId != null) {
+                spec = (spec == null) ? SellSpecification.hasUserId(userId) : spec.and(SellSpecification.hasUserId(userId));
+            }
+
+            // Filtro por totalSale
+            if (minTotalSale != null) {
+                spec = (spec == null) ? SellSpecification.totalSaleGreaterThanOrEqual(minTotalSale) : spec.and(SellSpecification.totalSaleGreaterThanOrEqual(minTotalSale));
+            }
+            if (maxTotalSale != null) {
+                spec = (spec == null) ? SellSpecification.totalSaleLessThanOrEqual(maxTotalSale) : spec.and(SellSpecification.totalSaleLessThanOrEqual(maxTotalSale));
+            }
+
+            // Si no hay filtros, devuelve todos
+            return (spec == null) ? sellRepository.findAll() : sellRepository.findAll(spec);
+        }
 
 
     public List<Sell> getAllSells(){

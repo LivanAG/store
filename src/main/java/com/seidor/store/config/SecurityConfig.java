@@ -70,6 +70,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PATCH, "/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/sell/filter").hasRole("ADMIN")
                                 // Todas las demás rutas requieren autenticación
                                 .anyRequest().authenticated()
                 )

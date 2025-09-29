@@ -8,10 +8,13 @@ import com.seidor.store.mapper.SellMapper;
 import com.seidor.store.model.Sell;
 import com.seidor.store.service.SellService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +33,17 @@ public class SellController {
     @GetMapping
     public ResponseEntity<List<SellResponseDTO>> getAllSells() {
         return ResponseEntity.ok(SellMapper.toDtoList(sellService.getAllSells()));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<SellResponseDTO>> getSellsByDate(@RequestParam(required = false)
+                                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                                @RequestParam(required = false)
+                                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                                @RequestParam(required = false) Integer userId,
+                                                                @RequestParam(required = false) Double minTotalSale,
+                                                                @RequestParam(required = false) Double maxTotalSale) {
+        return ResponseEntity.ok(SellMapper.toDtoList(sellService.getSellsByFilters(startDate, endDate,userId,minTotalSale,maxTotalSale)));
     }
 
     @GetMapping("/{id}")
