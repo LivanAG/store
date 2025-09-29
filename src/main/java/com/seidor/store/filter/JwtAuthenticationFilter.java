@@ -2,6 +2,8 @@ package com.seidor.store.filter;
 
 import com.seidor.store.security.JwtUtil;
 import com.seidor.store.service.MyUserDetailService;
+import com.seidor.store.utils.loggers.AppLogger;
+import com.seidor.store.utils.loggers.LoggerFactory;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,19 +51,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = "desconocido"; // valor por defecto
         String jwt = null;
 
+        // Obtener el logger desde la fábrica
+        AppLogger logger = LoggerFactory.getLogger(null, "/auth");
+
         // Extraer token JWT
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            String usuario = ""; // Valor por defecto para el log
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (io.jsonwebtoken.ExpiredJwtException e) {
-                // Token expirado → devuelve 401 con mensaje y log
-                logTokenError("Token expirado", e, usuario, response);
+                logTokenError("Token expirado", e, username, response, logger);
                 return; // detener el filtro
             } catch (Exception e) {
-                // Token inválido o mal formado
-                logTokenError("Token inválido", e, usuario, response);
+                logTokenError("Token inválido", e, username, response, logger);
                 return;
             }
         }
@@ -77,26 +79,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // Meter usuario en ThreadContext para logs
-        ThreadContext.put("usuario", username);
-
-        try {
-            // Continuar con la cadena de filtros / controlador
-            filterChain.doFilter(request, response);
-        } finally {
-            // Limpiar siempre el ThreadContext al final
-            ThreadContext.clearAll();
-        }
+        filterChain.doFilter(request, response);
     }
 
-    private void logTokenError(String mensaje, Exception ex, String usuario, HttpServletResponse response) throws IOException {
-        Logger logger = LogManager.getLogger("authLogger");
+    private void logTokenError(String mensaje, Exception ex, String usuario,
+                               HttpServletResponse response, AppLogger logger) throws IOException {
 
-        // Guardar usuario en ThreadContext para logs
-        ThreadContext.put("usuario", usuario);
 
-        // Log del error
-        logger.error("{} - {}", mensaje, ex.getMessage());
+        // Log del error usando la estrategia
+        logger.logError(mensaje + " - " + ex.getMessage());
 
         // Respuesta JSON
         String json = String.format(
@@ -111,6 +102,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.getWriter().write(json);
 
-        ThreadContext.clearAll();
     }
 }

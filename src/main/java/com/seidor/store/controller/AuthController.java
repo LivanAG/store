@@ -7,6 +7,8 @@ import com.seidor.store.dto.authDTOS.RegisterRequestDTO;
 import com.seidor.store.dto.authDTOS.RegisterResponseDTO;
 import com.seidor.store.model.User;
 import com.seidor.store.service.AuthService;
+import com.seidor.store.utils.loggers.AppLogger;
+import com.seidor.store.utils.loggers.LoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
@@ -33,15 +35,16 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
 
-        Logger logger = LogManager.getLogger("authLogger");
+        AppLogger logger = LoggerFactory.getLogger(null, "/auth");
+
 
         ThreadContext.put("usuario", request.getEmail());
-        logger.info("Intento de login de {}", request.getEmail());
+
+        logger.logInfo("Intento de login de " + request.getEmail());
 
         AuthResponseDTO response = authService.login(request);
 
-        logger.debug("Logueo exitoso");
-        ThreadContext.clearAll();
+        logger.logInfo("Logueo exitoso de " + request.getEmail());
 
         return ResponseEntity.ok(response);
     }
@@ -58,12 +61,12 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponseDTO> refreshToken(HttpServletRequest request) {
 
-        Logger logger = LogManager.getLogger("authLogger");
+        AppLogger logger = LoggerFactory.getLogger(null, "/auth");
 
         AuthResponseDTO response = authService.refreshToken(request);
 
-        logger.info("JWT renovado para {}", response.getToken());
-        ThreadContext.clearAll();
+        logger.logInfo("JWT renovado para " + response.getToken());
+
         return ResponseEntity.ok(response);
     }
 }

@@ -7,6 +7,8 @@ import com.seidor.store.exception.myExceptions.InsufficientStockException;
 import com.seidor.store.exception.myExceptions.InvalidRoleException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.exception.myExceptions.UnauthorizedException;
+import com.seidor.store.utils.loggers.AppLogger;
+import com.seidor.store.utils.loggers.LoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -30,7 +32,6 @@ import org.apache.logging.log4j.ThreadContext;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ExceptionDTO> handleResourceNotFound(ResourceNotFoundException ex) {
@@ -40,26 +41,16 @@ public class GlobalExceptionHandler {
         // porque yo lanzo las excepciones en cada servicio manualmente
         String originClass = ex.getStackTrace()[0].getClassName();
 
-        Logger logger;
+        AppLogger logger = LoggerFactory.getLogger(originClass, null);
 
-        if(originClass.equals("com.seidor.store.service.SellService")) {
-            logger = LogManager.getLogger("sellLogger");
-        }
-        else if(originClass.equals("com.seidor.store.service.ProductService")) {
-            logger = LogManager.getLogger("productLogger");
-        }
-        else{
-            logger = LogManager.getLogger("authLogger");
-        }
+
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.NOT_FOUND,
                 "Recurso no encontrado",
                 "RESOURCE_NOT_FOUND",
                 ex.getMessage()
         );
-
-        logger.error("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode() , originClass);
-        ThreadContext.clearAll();
+        logger.logError("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -67,20 +58,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionDTO> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
 
-        String path = request.getRequestURI();
-        Logger logger;
-        String originClass = ex.getStackTrace()[0].getClassName();
+
         //En esta accedo al path y no al servicio porque, estas excepciones se lanzan internamente
         //la unica forma de acceder a donde esta siendo lanzada era por el dto, por el controller o por el path
-        if(path.equals("/sell")) {
-            logger = LogManager.getLogger("sellLogger");
-        }
-        else if(path.equals("/product")) {
-            logger = LogManager.getLogger("productLogger");
-        }
-        else{
-            logger = LogManager.getLogger("authLogger");
-        }
+        String path = request != null ? request.getRequestURI() : null;
+        AppLogger logger = LoggerFactory.getLogger(null, path);
 
         MethodArgumentNotValidException a = ex;
 
@@ -90,48 +72,47 @@ public class GlobalExceptionHandler {
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
-        logger.info("Error de validación: {}", validationErrors);
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.BAD_REQUEST,
                 "Error de validación",
                 "VALIDATION_ERROR",
                 validationErrors
         );
-        ThreadContext.clearAll();
+
+        logger.logInfo("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode());
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ExceptionDTO> handleDataIntegrity(DataIntegrityViolationException ex) {
-        final Logger logger = LogManager.getLogger("authLogger");
+        AppLogger logger = LoggerFactory.getLogger(null, "/auth");
 
-        logger.error("Violación de integridad de datos");
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.CONFLICT,
                 "Violación de integridad de datos",
                 "DATA_INTEGRITY",
                 ex.getMostSpecificCause().getMessage()
         );
-        ThreadContext.clearAll();
+        logger.logError("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionDTO> handleBadCredentials(BadCredentialsException ex) {
 
-        final Logger logger = LogManager.getLogger("authLogger");
+        AppLogger logger = LoggerFactory.getLogger(null, "/auth");
 
-        logger.info("Datos incorrectos en el logueo");
+
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.UNAUTHORIZED,
                 "Credenciales incorrectas",
                 "BAD_CREDENTIALS",
                 ex.getMessage()
         );
+        logger.logError("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode());
 
-
-        ThreadContext.clearAll();
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
@@ -139,9 +120,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ExceptionDTO> handleInsufficientStock(InsufficientStockException ex) {
 
-        final Logger logger = LogManager.getLogger("com.seidor.store.service.SellService");
+        String originClass = ex.getStackTrace()[0].getClassName();
+        AppLogger logger = LoggerFactory.getLogger(originClass, null);
 
-        logger.info("Stock insuficiente para el producto {}", ex.getProductId());
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.BAD_REQUEST,
                 "Stock insuficiente",
@@ -149,7 +130,7 @@ public class GlobalExceptionHandler {
                 String.format("Producto %d, solicitado %d, disponible %d",
                         ex.getProductId(), ex.getRequested(), ex.getAvailable())
         );
-        ThreadContext.clearAll();
+        logger.logInfo("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -157,7 +138,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRoleException.class)
     public ResponseEntity<ExceptionDTO> handleInvalidRoleException(InvalidRoleException ex) {
-        final Logger logger = LogManager.getLogger("authLogger");
+        AppLogger logger = LoggerFactory.getLogger(null, "/auth");
 
         ExceptionDTO error = new ExceptionDTO(
                 HttpStatus.BAD_REQUEST,
@@ -166,7 +147,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
 
-        logger.error("Error de rol inválido: {}", ex.getMessage());
+        logger.logError("Message: "+error.getMessage()+"/ Backend Message:"+error.getBackendMessage()+"/ Code:"+error.getCode());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
