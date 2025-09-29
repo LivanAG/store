@@ -1,7 +1,6 @@
-package com.seidor.store.dto;
+package com.seidor.store.dto.sellDTOS;
 
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
-import com.seidor.store.model.SellDetail;
 import lombok.Getter;
 import lombok.Setter;
 

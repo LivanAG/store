@@ -1,7 +1,7 @@
 package com.seidor.store.service;
 
 import com.seidor.store.config.AuthUtil;
-import com.seidor.store.dto.SellRequestDTO;
+import com.seidor.store.dto.sellDTOS.SellRequestDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 import com.seidor.store.exception.myExceptions.InsufficientStockException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
@@ -15,8 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static com.seidor.store.model.Role.ADMIN;
-import static com.seidor.store.model.Role.CLIENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

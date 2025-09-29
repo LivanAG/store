@@ -1,8 +1,6 @@
 package com.seidor.store.mapper;
 
-import com.seidor.store.dto.SellResponseDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
-import com.seidor.store.model.Sell;
 import com.seidor.store.model.SellDetail;
 
 import java.util.Set;

@@ -1,9 +1,8 @@
-package com.seidor.store.dto;
+package com.seidor.store.dto.sellDTOS;
 
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 
-import com.seidor.store.model.SellDetail;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 @Getter
 public class SellRequestDTO {
 
-    @NotNull(message = "Es obligatorio al menos un detalle de venta")
+    @NotEmpty(message = "Es obligatorio al menos un detalle de venta")
     private Set<SellDetailDTO> sellDetails;
 
 }

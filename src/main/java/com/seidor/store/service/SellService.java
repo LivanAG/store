@@ -1,16 +1,13 @@
 package com.seidor.store.service;
 
 import com.seidor.store.config.AuthUtil;
-import com.seidor.store.dto.ProductRequestDTO;
-import com.seidor.store.dto.SellRequestDTO;
+import com.seidor.store.dto.sellDTOS.SellRequestDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 import com.seidor.store.exception.myExceptions.InsufficientStockException;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
-import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.*;
 import com.seidor.store.repository.ProductRepository;
 import com.seidor.store.repository.SellRepository;
-import com.seidor.store.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

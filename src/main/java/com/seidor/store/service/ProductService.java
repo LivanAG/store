@@ -1,15 +1,10 @@
 package com.seidor.store.service;
 
-import com.seidor.store.config.AuthUtil;
-import com.seidor.store.dto.ProductRequestDTO;
+import com.seidor.store.dto.productDTOS.ProductRequestDTO;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
-import com.seidor.store.model.User;
 import com.seidor.store.repository.ProductRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,6 +52,21 @@ public class ProductService {
     }
 
 
+    public Product increaseStock(Integer productId, Integer amount) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+        product.getStorage().setStock(product.getStorage().getStock() + amount);
+        return productRepository.save(product);
+    }
+
+    public Product updatePrice(Integer productId, Double newPrice) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+        product.getStorage().setPrice(newPrice);
+        return productRepository.save(product);
+    }
 
 
 

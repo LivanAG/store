@@ -1,7 +1,7 @@
 package com.seidor.store.mapper;
 
-import com.seidor.store.dto.ProductRequestDTO;
-import com.seidor.store.dto.ProductResponseDTO;
+import com.seidor.store.dto.productDTOS.ProductRequestDTO;
+import com.seidor.store.dto.productDTOS.ProductResponseDTO;
 import com.seidor.store.dto.storageDTOS.StorageDTO;
 import com.seidor.store.model.Product;
 import com.seidor.store.model.Storage;
@@ -18,18 +18,8 @@ public class ProductMapper {
         StorageDTO incoming = dto.getStorage();
 
         Storage storage = new Storage();
-
-        if (incoming == null) {
-            storage.setPrice(0.0);
-            storage.setStock(0);
-        } else {
-            storage.setPrice(
-                    incoming.getPrice() != null ? incoming.getPrice() : 0.0
-            );
-            storage.setStock(
-                    incoming.getStock() != null ? incoming.getStock() : 0
-            );
-        }
+        storage.setPrice(incoming.getPrice());
+        storage.setStock(incoming.getStock());
 
         product.setStorage(storage);
         return product;

@@ -65,11 +65,11 @@ public class SecurityConfig {
                                 // GET /product/** -> ADMIN o CLIENT
                                 .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("ADMIN", "CLIENT")
 
-                                // POST, PUT, DELETE /product/** -> solo ADMIN
+                                // POST, PUT, DELETE, PATCH/product/** -> solo ADMIN
                                 .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
-
+                                .requestMatchers(HttpMethod.PATCH, "/product/**").hasRole("ADMIN")
                                 // Todas las demás rutas requieren autenticación
                                 .anyRequest().authenticated()
                 )

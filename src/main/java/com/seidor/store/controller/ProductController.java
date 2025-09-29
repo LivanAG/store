@@ -1,13 +1,14 @@
 package com.seidor.store.controller;
 
 
-import com.seidor.store.dto.ProductRequestDTO;
-import com.seidor.store.dto.ProductResponseDTO;
+import com.seidor.store.dto.productDTOS.IncreaseStockDTO;
+import com.seidor.store.dto.productDTOS.ProductRequestDTO;
+import com.seidor.store.dto.productDTOS.ProductResponseDTO;
+import com.seidor.store.dto.productDTOS.UpdatePriceDTO;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
 import com.seidor.store.service.ProductService;
 import jakarta.validation.Valid;
-import org.apache.logging.log4j.ThreadContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,21 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable("id") Integer id,@Valid @RequestBody ProductRequestDTO request) {
         return ResponseEntity.ok(ProductMapper.toDto(productService.updateProduct(id, request)));
+    }
+
+
+    @PatchMapping("/{id}/stock")
+    public ResponseEntity<ProductResponseDTO> increaseStock(@PathVariable Integer id,
+                                                            @Valid @RequestBody IncreaseStockDTO dto) {
+        Product updatedProduct = productService.increaseStock(id, dto.getAmount());
+        return ResponseEntity.ok(ProductMapper.toDto(updatedProduct));
+    }
+
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<ProductResponseDTO> updatePrice(@PathVariable Integer id,
+                                                          @Valid @RequestBody UpdatePriceDTO dto) {
+        Product updatedProduct = productService.updatePrice(id, dto.getNewPrice());
+        return ResponseEntity.ok(ProductMapper.toDto(updatedProduct));
     }
 
     @DeleteMapping("/{id}")

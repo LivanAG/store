@@ -1,10 +1,8 @@
 package com.seidor.store.service;
 
-import com.seidor.store.dto.ProductRequestDTO;
-import com.seidor.store.dto.ProductResponseDTO;
+import com.seidor.store.dto.productDTOS.ProductRequestDTO;
 import com.seidor.store.dto.storageDTOS.StorageDTO;
 import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
-import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
 import com.seidor.store.repository.ProductRepository;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.seidor.store.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seidor.store.dto.SellRequestDTO;
+import com.seidor.store.dto.sellDTOS.SellRequestDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 import com.seidor.store.model.Product;
 import com.seidor.store.model.Sell;

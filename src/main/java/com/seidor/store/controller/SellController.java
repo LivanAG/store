@@ -1,7 +1,7 @@
 package com.seidor.store.controller;
 
-import com.seidor.store.dto.SellRequestDTO;
-import com.seidor.store.dto.SellResponseDTO;
+import com.seidor.store.dto.sellDTOS.SellRequestDTO;
+import com.seidor.store.dto.sellDTOS.SellResponseDTO;
 import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
 import com.seidor.store.mapper.SellDetailMapper;
 import com.seidor.store.mapper.SellMapper;

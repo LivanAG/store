@@ -1,14 +1,8 @@
-package com.seidor.store.dto;
+package com.seidor.store.dto.productDTOS;
 
 
-import com.seidor.store.dto.storageDTOS.StorageDTO;
-import com.seidor.store.model.Sell;
-import com.seidor.store.model.SellDetail;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.Set;
 
 @Setter
 @Getter
