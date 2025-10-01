@@ -2,8 +2,8 @@ package com.seidor.store.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seidor.store.dto.authDTOS.AuthRequestDTO;
-import com.seidor.store.dto.authDTOS.RegisterRequestDTO;
+import com.seidor.store.dto.auth_dtos.AuthRequestDTO;
+import com.seidor.store.dto.auth_dtos.RegisterRequestDTO;
 import com.seidor.store.model.Role;
 import com.seidor.store.model.User;
 import com.seidor.store.repository.UserRepository;

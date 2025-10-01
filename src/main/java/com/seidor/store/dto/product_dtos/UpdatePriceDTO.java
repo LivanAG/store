@@ -1,4 +1,4 @@
-package com.seidor.store.dto.productDTOS;
+package com.seidor.store.dto.product_dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

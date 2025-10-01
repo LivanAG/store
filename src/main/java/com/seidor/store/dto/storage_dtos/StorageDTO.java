@@ -1,6 +1,5 @@
-package com.seidor.store.dto.storageDTOS;
+package com.seidor.store.dto.storage_dtos;
 
-import com.seidor.store.model.Storage;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;

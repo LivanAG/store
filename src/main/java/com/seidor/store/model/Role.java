@@ -1,7 +1,7 @@
 package com.seidor.store.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.seidor.store.exception.myExceptions.InvalidRoleException;
+import com.seidor.store.exception.my_exceptions.InvalidRoleException;
 
 public enum Role {
     ADMIN,

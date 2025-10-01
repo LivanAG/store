@@ -1,6 +1,6 @@
 package com.seidor.store.service.reactive;
 
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.model.Sell;
 import com.seidor.store.model.SellDetail;
 import com.seidor.store.repository.SellRepository;

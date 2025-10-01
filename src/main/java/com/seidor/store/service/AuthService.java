@@ -1,17 +1,14 @@
 package com.seidor.store.service;
 
-import com.seidor.store.dto.authDTOS.AuthRequestDTO;
-import com.seidor.store.dto.authDTOS.AuthResponseDTO;
-import com.seidor.store.dto.authDTOS.RegisterRequestDTO;
-import com.seidor.store.exception.myExceptions.InvalidRoleException;
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
-import com.seidor.store.model.Role;
+import com.seidor.store.dto.auth_dtos.AuthRequestDTO;
+import com.seidor.store.dto.auth_dtos.AuthResponseDTO;
+import com.seidor.store.dto.auth_dtos.RegisterRequestDTO;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.model.User;
 import com.seidor.store.repository.UserRepository;
 import com.seidor.store.security.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

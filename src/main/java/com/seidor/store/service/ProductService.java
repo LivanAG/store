@@ -1,7 +1,7 @@
 package com.seidor.store.service;
 
-import com.seidor.store.dto.productDTOS.ProductRequestDTO;
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.dto.product_dtos.ProductRequestDTO;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
 import com.seidor.store.repository.ProductRepository;
@@ -37,7 +37,7 @@ public class ProductService {
     }
 
     public Product updateProduct(Integer id, ProductRequestDTO request){
-        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        Product product = this.getProductById(id);
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
@@ -47,22 +47,20 @@ public class ProductService {
     }
 
     public void deleteProductById(Integer id){
-        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        this.getProductById(id);
         productRepository.deleteById(id);
     }
 
 
-    public Product increaseStock(Integer productId, Integer amount) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+    public Product increaseStock(Integer id, Integer amount) {
+        Product product = this.getProductById(id);
 
         product.getStorage().setStock(product.getStorage().getStock() + amount);
         return productRepository.save(product);
     }
 
-    public Product updatePrice(Integer productId, Double newPrice) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+    public Product updatePrice(Integer id, Double newPrice) {
+        Product product = this.getProductById(id);
 
         product.getStorage().setPrice(newPrice);
         return productRepository.save(product);

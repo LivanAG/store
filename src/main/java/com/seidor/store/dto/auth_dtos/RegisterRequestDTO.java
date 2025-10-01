@@ -1,4 +1,4 @@
-package com.seidor.store.dto.authDTOS;
+package com.seidor.store.dto.auth_dtos;
 
 import com.seidor.store.model.Role;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.seidor.store.dto.authDTOS;
+package com.seidor.store.dto.auth_dtos;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,10 @@
 package com.seidor.store.service;
 
-import com.seidor.store.dto.productDTOS.ProductRequestDTO;
-import com.seidor.store.dto.storageDTOS.StorageDTO;
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.dto.product_dtos.ProductRequestDTO;
+import com.seidor.store.dto.storage_dtos.StorageDTO;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.model.Product;
+import com.seidor.store.model.Storage;
 import com.seidor.store.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,12 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceTest {
+class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
@@ -35,7 +35,7 @@ public class ProductServiceTest {
 
 
     @Test
-    public void getAllproducts_shouldReturnAll() {
+     void getAllproducts_shouldReturnAll() {
         List<Product> products = List.of(new Product(), new Product());
         when(productRepository.findAll()).thenReturn(products);
         List<Product> result = productService.getAllproducts();
@@ -44,7 +44,7 @@ public class ProductServiceTest {
 
     //Buscar un producto que no existe debe lanzar la excepcion ResourceNotFoundException
     @Test
-    public void getProductById_shouldThrowException_IfNotFound() {
+     void getProductById_shouldThrowException_IfNotFound() {
         Integer id = 1;
 
         when(productRepository.findById(id)).thenReturn(Optional.empty());
@@ -55,9 +55,22 @@ public class ProductServiceTest {
     }
 
 
+    @Test
+    void getProductById_shouldReturnProduct_WhenExists() {
+        Integer id = 1;
+        Product product = new Product();
+        product.setId(id);
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+
+        Product result = productService.getProductById(id);
+
+        assertEquals(product, result);
+        verify(productRepository).findById(id);
+    }
+
     // Agregar un producto valido llama al metodo save del repositorio
     @Test
-    public void addProduct_ShouldSaveCorrectProduct(){
+     void addProduct_ShouldSaveCorrectProduct(){
 
         ProductRequestDTO request = new ProductRequestDTO("Livan","descripcion",new StorageDTO(1,10.5));
 
@@ -78,7 +91,7 @@ public class ProductServiceTest {
 
     //Verico que se llame al metodo save y que los datos se actualizan correctamente
     @Test
-    public void updateProduct_ShouldCallSaveMethod_WhenProductIsValid(){
+     void updateProduct_ShouldCallSaveMethod_WhenProductIsValid(){
         Integer id = 1;
 
         Product productOlder = new Product();
@@ -102,7 +115,7 @@ public class ProductServiceTest {
 
     @Test
     //verifico que se elimina correcatmente un producto
-    public void deleteProduct_shouldThrowException_WhenProductExists(){
+     void deleteProduct_shouldThrowException_WhenProductNoExists(){
         Integer id = 1;
 
         when(productRepository.findById(id)).thenReturn(Optional.empty());
@@ -113,8 +126,47 @@ public class ProductServiceTest {
 
     }
 
+    @Test
+    void deleteProductById_shouldCallDelete_WhenProductExists() {
+        Integer id = 1;
+        Product product = new Product();
+        product.setId(id);
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
 
+        productService.deleteProductById(id);
 
+        verify(productRepository).findById(id);
+        verify(productRepository).deleteById(id);
+    }
 
+    @Test
+    void increaseStock_shouldIncreaseStockCorrectly() {
+        Integer id = 1;
+        Product product = new Product();
+        product.setId(id);
+        product.setStorage(new Storage(1,5, 10.0,product));
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(product);
+
+        Product result = productService.increaseStock(id, 3);
+
+        assertEquals(8, result.getStorage().getStock());
+        verify(productRepository).save(product);
+    }
+
+    @Test
+    void updatePrice_shouldUpdatePriceCorrectly() {
+        Integer id = 1;
+        Product product = new Product();
+        product.setId(id);
+        product.setStorage(new Storage(1,5, 10.0,product));
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(product);
+
+        Product result = productService.updatePrice(id, 15.5);
+
+        assertEquals(15.5, result.getStorage().getPrice());
+        verify(productRepository).save(product);
+    }
 
 }

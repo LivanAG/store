@@ -1,8 +1,8 @@
 package com.seidor.store.mapper;
 
-import com.seidor.store.dto.productDTOS.ProductRequestDTO;
-import com.seidor.store.dto.productDTOS.ProductResponseDTO;
-import com.seidor.store.dto.storageDTOS.StorageDTO;
+import com.seidor.store.dto.product_dtos.ProductRequestDTO;
+import com.seidor.store.dto.product_dtos.ProductResponseDTO;
+import com.seidor.store.dto.storage_dtos.StorageDTO;
 import com.seidor.store.model.Product;
 import com.seidor.store.model.Storage;
 

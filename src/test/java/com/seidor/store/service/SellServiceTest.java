@@ -1,10 +1,10 @@
 package com.seidor.store.service;
 
 import com.seidor.store.config.AuthUtil;
-import com.seidor.store.dto.sellDTOS.SellRequestDTO;
-import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
-import com.seidor.store.exception.myExceptions.InsufficientStockException;
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.dto.sell_dtos.SellRequestDTO;
+import com.seidor.store.dto.sell_detail_dtos.SellDetailDTO;
+import com.seidor.store.exception.my_exceptions.InsufficientStockException;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.model.*;
 import com.seidor.store.repository.ProductRepository;
 import com.seidor.store.repository.SellRepository;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.*;
 
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class SellServiceTest {
+class SellServiceTest {
 
 
     @Mock
@@ -187,7 +188,6 @@ public class SellServiceTest {
             // ACT + ASSERT
             assertThrows(InsufficientStockException.class, () -> sellService.addSell(request));
 
-            // verify no reduce stock ni guarda venta
             verify(storageService, never()).reduceStock(any(), anyInt());
             verify(sellRepository, never()).save(any());
         }
@@ -275,6 +275,25 @@ public class SellServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> sellService.getSellDetails(id));
     }
+
+    @Test
+    void getSellsByFilters_shouldReturnFilteredSells() {
+        Sell sell1 = new Sell();
+        sell1.setTotalSale(100.0);
+        Sell sell2 = new Sell();
+        sell2.setTotalSale(200.0);
+
+        List<Sell> filteredSells = List.of(sell1, sell2);
+
+        when(sellRepository.findAll(ArgumentMatchers.<Specification<Sell>>any()))
+                .thenReturn(filteredSells);
+
+        List<Sell> result = sellService.getSellsByFilters(null, null, null, 50.0, 300.0);
+
+        assertEquals(2, result.size());
+        verify(sellRepository).findAll(ArgumentMatchers.<Specification<Sell>>any());
+    }
+
 
 
 }

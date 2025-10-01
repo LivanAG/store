@@ -1,7 +1,9 @@
-package com.seidor.store.dto.exceptionDTOS;
+package com.seidor.store.dto.exception_dtos;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class ExceptionDTO {
 
     private int httpStatus;
@@ -16,19 +18,4 @@ public class ExceptionDTO {
         this.backendMessage = backendMessage;
     }
 
-    public int getHttpStatus() {
-        return httpStatus;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getBackendMessage() {
-        return backendMessage;
-    }
 }

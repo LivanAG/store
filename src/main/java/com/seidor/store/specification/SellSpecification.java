@@ -1,4 +1,4 @@
-package com.seidor.store.Specification;
+package com.seidor.store.specification;
 
 import com.seidor.store.model.Sell;
 import org.springframework.data.jpa.domain.Specification;

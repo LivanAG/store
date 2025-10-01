@@ -1,22 +1,18 @@
 package com.seidor.store.service;
 
-import com.seidor.store.Specification.SellSpecification;
+import com.seidor.store.specification.SellSpecification;
 import com.seidor.store.config.AuthUtil;
-import com.seidor.store.dto.sellDTOS.SellRequestDTO;
-import com.seidor.store.dto.sellDTOS.SellResponseDTO;
-import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
-import com.seidor.store.exception.myExceptions.InsufficientStockException;
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
-import com.seidor.store.mapper.SellMapper;
+import com.seidor.store.dto.sell_dtos.SellRequestDTO;
+import com.seidor.store.dto.sell_detail_dtos.SellDetailDTO;
+import com.seidor.store.exception.my_exceptions.InsufficientStockException;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.model.*;
 import com.seidor.store.repository.ProductRepository;
 import com.seidor.store.repository.SellRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,9 +35,11 @@ public class SellService {
     }
 
 
+    public Sell getSellById(Integer id) {
+        return sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
+    }
 
-
-public List<Sell> getSellsByFilters(
+    public List<Sell> getSellsByFilters(
                 LocalDateTime startDate,
                 LocalDateTime endDate,
                 Integer userId,
@@ -71,7 +69,7 @@ public List<Sell> getSellsByFilters(
                 spec = (spec == null) ? SellSpecification.totalSaleLessThanOrEqual(maxTotalSale) : spec.and(SellSpecification.totalSaleLessThanOrEqual(maxTotalSale));
             }
 
-            // Si no hay filtros, devuelve todos
+
             return (spec == null) ? sellRepository.findAll() : sellRepository.findAll(spec);
         }
 
@@ -92,7 +90,6 @@ public List<Sell> getSellsByFilters(
 
 
     public Sell addSell(SellRequestDTO request) {
-
 
         //Recupero el usuario logueado que quiere realizar la peticion
         User user = AuthUtil.getCurrentUser();
@@ -154,18 +151,16 @@ public List<Sell> getSellsByFilters(
 
 
     public void deleteSellbyId(Integer id) {
-        Sell sell = sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
+        this.getSellById(id);
         sellRepository.deleteById(id);
     }
 
 
-    public Sell getSellById(Integer id) {
-        return sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
-    }
+
 
 
     public Set<SellDetail> getSellDetails(Integer id) {
-        Sell sell = sellRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sell not found"));
+        Sell sell = this.getSellById(id);
         return sell.getSellDetails();
     }
 }

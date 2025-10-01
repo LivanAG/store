@@ -1,10 +1,10 @@
 package com.seidor.store.controller;
 
 
-import com.seidor.store.dto.productDTOS.IncreaseStockDTO;
-import com.seidor.store.dto.productDTOS.ProductRequestDTO;
-import com.seidor.store.dto.productDTOS.ProductResponseDTO;
-import com.seidor.store.dto.productDTOS.UpdatePriceDTO;
+import com.seidor.store.dto.product_dtos.IncreaseStockDTO;
+import com.seidor.store.dto.product_dtos.ProductRequestDTO;
+import com.seidor.store.dto.product_dtos.ProductResponseDTO;
+import com.seidor.store.dto.product_dtos.UpdatePriceDTO;
 import com.seidor.store.mapper.ProductMapper;
 import com.seidor.store.model.Product;
 import com.seidor.store.service.ProductService;

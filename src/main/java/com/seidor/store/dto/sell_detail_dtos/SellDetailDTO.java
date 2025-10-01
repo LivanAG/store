@@ -1,4 +1,4 @@
-package com.seidor.store.dto.sellDetailDTO;
+package com.seidor.store.dto.sell_detail_dtos;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

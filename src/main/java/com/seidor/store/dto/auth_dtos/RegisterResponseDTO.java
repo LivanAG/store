@@ -1,13 +1,9 @@
-package com.seidor.store.dto.authDTOS;
+package com.seidor.store.dto.auth_dtos;
 
 import com.seidor.store.model.Role;
-import com.seidor.store.model.Sell;
 import com.seidor.store.model.User;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Setter
 @Getter

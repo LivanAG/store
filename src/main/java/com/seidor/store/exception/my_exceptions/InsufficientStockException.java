@@ -1,4 +1,4 @@
-package com.seidor.store.exception.myExceptions;
+package com.seidor.store.exception.my_exceptions;
 
 public class InsufficientStockException extends RuntimeException {
 

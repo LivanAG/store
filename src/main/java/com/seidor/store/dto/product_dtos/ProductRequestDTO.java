@@ -1,6 +1,6 @@
-package com.seidor.store.dto.productDTOS;
+package com.seidor.store.dto.product_dtos;
 
-import com.seidor.store.dto.storageDTOS.StorageDTO;
+import com.seidor.store.dto.storage_dtos.StorageDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

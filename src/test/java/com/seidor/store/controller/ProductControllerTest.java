@@ -2,9 +2,11 @@ package com.seidor.store.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seidor.store.dto.productDTOS.ProductRequestDTO;
-import com.seidor.store.dto.storageDTOS.StorageDTO;
-import com.seidor.store.exception.myExceptions.ResourceNotFoundException;
+import com.seidor.store.dto.product_dtos.IncreaseStockDTO;
+import com.seidor.store.dto.product_dtos.ProductRequestDTO;
+import com.seidor.store.dto.product_dtos.UpdatePriceDTO;
+import com.seidor.store.dto.storage_dtos.StorageDTO;
+import com.seidor.store.exception.my_exceptions.ResourceNotFoundException;
 import com.seidor.store.model.Product;
 import com.seidor.store.model.Storage;
 import com.seidor.store.service.ProductService;
@@ -167,5 +169,56 @@ class ProductControllerTest {
 
         verify(productService).deleteProductById(1);
     }
+
+    @Test
+    void increaseStock_shouldReturnUpdatedProduct() throws Exception {
+        IncreaseStockDTO dto = new IncreaseStockDTO();
+        dto.setAmount(5);
+
+        Product product = new Product();
+        product.setName("Product1");
+        product.setStorage(new Storage());
+
+        Product updatedProduct = new Product();
+        updatedProduct.setName("Product1");
+        updatedProduct.setStorage(new Storage());
+        updatedProduct.getStorage().setStock(10);
+
+        when(productService.increaseStock(eq(1), eq(5))).thenReturn(updatedProduct);
+
+        mockMvc.perform(patch("/product/1/stock")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stock").value(10));
+
+        verify(productService).increaseStock(eq(1), eq(5));
+    }
+
+    @Test
+    void updatePrice_shouldReturnUpdatedProduct() throws Exception {
+        UpdatePriceDTO dto = new UpdatePriceDTO();
+        dto.setNewPrice(15.5);
+
+        Product product = new Product();
+        product.setName("Product1");
+        product.setStorage(new Storage());
+
+        Product updatedProduct = new Product();
+        updatedProduct.setName("Product1");
+        updatedProduct.setStorage(new Storage());
+        updatedProduct.getStorage().setPrice(15.5);
+
+        when(productService.updatePrice(eq(1), eq(15.5))).thenReturn(updatedProduct);
+
+        mockMvc.perform(patch("/product/1/price")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(15.5));
+
+        verify(productService).updatePrice(eq(1), eq(15.5));
+    }
+
 }
 

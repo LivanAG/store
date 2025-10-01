@@ -1,8 +1,8 @@
 package com.seidor.store.controller;
 
-import com.seidor.store.dto.sellDTOS.SellRequestDTO;
-import com.seidor.store.dto.sellDTOS.SellResponseDTO;
-import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
+import com.seidor.store.dto.sell_dtos.SellRequestDTO;
+import com.seidor.store.dto.sell_dtos.SellResponseDTO;
+import com.seidor.store.dto.sell_detail_dtos.SellDetailDTO;
 import com.seidor.store.mapper.SellDetailMapper;
 import com.seidor.store.mapper.SellMapper;
 import com.seidor.store.model.Sell;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;

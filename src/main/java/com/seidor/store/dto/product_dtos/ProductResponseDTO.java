@@ -1,4 +1,4 @@
-package com.seidor.store.dto.productDTOS;
+package com.seidor.store.dto.product_dtos;
 
 
 import lombok.Getter;
@@ -11,7 +11,7 @@ public class ProductResponseDTO {
     private String name;
     private String description;
     private Double price;
-    private Integer Stock;
+    private Integer stock;
 
 
 }

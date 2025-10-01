@@ -1,6 +1,6 @@
-package com.seidor.store.dto.sellDTOS;
+package com.seidor.store.dto.sell_dtos;
 
-import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
+import com.seidor.store.dto.sell_detail_dtos.SellDetailDTO;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

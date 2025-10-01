@@ -1,6 +1,6 @@
 package com.seidor.store.controller.reactive;
 
-import com.seidor.store.dto.sellDetailDTO.SellDetailDTO;
+import com.seidor.store.dto.sell_detail_dtos.SellDetailDTO;
 import com.seidor.store.mapper.SellDetailMapper;
 import com.seidor.store.service.reactive.SellServiceReactive;
 import org.springframework.web.bind.annotation.*;
